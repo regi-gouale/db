@@ -21,7 +21,7 @@ Cette solution fournit un environnement PostgreSQL standardisé et conteneurisé
 1. Clonez ce dépôt :
 
    ```bash
-   git clone https://github.com/username/db.git
+   git clone https://github.com/regi-gouale/db.git
    cd db
    ```
 
