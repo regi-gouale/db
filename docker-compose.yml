@@ -14,6 +14,9 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=md5
       - POSTGRES_SHARED_BUFFERS=${POSTGRES_SHARED_BUFFERS:-128MB}
       - POSTGRES_EFFECTIVE_CACHE_SIZE=${POSTGRES_EFFECTIVE_CACHE_SIZE:-512MB}
+      - POSTGRES_MAX_CONNECTIONS=${POSTGRES_MAX_CONNECTIONS:-100}
+      - POSTGRES_WORK_MEM=${POSTGRES_WORK_MEM:-4MB}
+      - POSTGRES_MAINTENANCE_WORK_MEM=${POSTGRES_MAINTENANCE_WORK_MEM:-64MB}
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
@@ -31,11 +34,18 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "1"
-          memory: 1G
+          cpus: "${POSTGRES_CPU_LIMIT:-1}"
+          memory: "${POSTGRES_MEMORY_LIMIT:-1G}"
     security_opt:
       - no-new-privileges:true
     user: postgres
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - FOWNER
+      - SETGID
+      - SETUID
 
   # Service de backup automatique programmé
   backup:
@@ -53,14 +63,28 @@ services:
       - BACKUP_SCHEDULE=${BACKUP_SCHEDULE:-0 2 * * *}
     entrypoint: ["/scripts/entrypoint-backup.sh"]
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - backend_network
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "256M"
+    security_opt:
+      - no-new-privileges:true
 
 networks:
   backend_network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
+    driver_opts:
+      com.docker.network.bridge.name: pg_net
+      com.docker.network.driver.mtu: 1500
 
 volumes:
   postgres_data:
