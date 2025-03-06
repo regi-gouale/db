@@ -27,19 +27,14 @@ Cette solution fournit un environnement PostgreSQL standardisé et conteneurisé
    cd db
    ```
 
-2. Copiez le fichier .env.example en .env et modifiez les variables selon vos besoins :
+2. Exécutez le script de configuration :
 
    ```bash
-   cp .env.example .env
+   chmod +x scripts/setup.sh
+   ./scripts/setup.sh
    ```
 
-3. Rendez les scripts exécutables :
-
-   ```bash
-   chmod +x scripts/*.sh
-   ```
-
-4. Démarrez l'environnement :
+3. Démarrez l'environnement :
    ```bash
    docker-compose up -d
    ```
@@ -162,6 +157,28 @@ docker-compose logs backup
 - Le service de base de données fonctionne avec des privilèges limités
 - Les capacités Docker sont limitées au strict minimum (principe du moindre privilège)
 - Le réseau utilise un subnet dédié pour isoler les services
+
+## Administration de la base de données
+
+### Interface Web pgAdmin
+
+Une interface d'administration pgAdmin est disponible pour gérer visuellement votre base de données PostgreSQL.
+
+1. Accédez à l'interface via votre navigateur web : http://localhost:5050 (ou le port que vous avez configuré)
+2. Connectez-vous avec les identifiants définis dans votre fichier .env :
+   - Email : valeur de PGADMIN_DEFAULT_EMAIL
+   - Mot de passe : valeur de PGADMIN_DEFAULT_PASSWORD
+3. **Le serveur PostgreSQL est automatiquement configuré** et prêt à être utilisé dans la liste des serveurs
+
+### Connexion automatique
+
+La connexion au serveur PostgreSQL est automatiquement configurée dans pgAdmin. Vous n'avez pas besoin de saisir les paramètres de connexion manuellement.
+
+Si vous modifiez les paramètres PostgreSQL dans le fichier .env, exécutez à nouveau le script de configuration pour mettre à jour la connexion pgAdmin :
+
+```bash
+./scripts/setup.sh
+```
 
 ## License
 

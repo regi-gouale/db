@@ -16,3 +16,9 @@ data/
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# Configuration pgAdmin générée par le script
+config/pgadmin/servers.json
+
+# Backup files
+backups/
