@@ -7,6 +7,7 @@ Cette solution fournit un environnement PostgreSQL standardisé et conteneurisé
 - **Base de données PostgreSQL 15** basée sur Alpine Linux
 - **Persistance des données** grâce aux volumes Docker
 - **Sauvegardes automatiques** programmées avec rotation
+- **Interface d'administration pgAdmin** pour gérer visuellement la base de données
 - **Paramètres de performance** optimisés et configurables
 - **Healthcheck** pour surveiller l'état de la base de données
 - **Configuration sécurisée** avec isolation et restrictions de privilèges
@@ -71,6 +72,15 @@ Modifiez le fichier `.env` pour personnaliser la configuration :
 
 - `BACKUP_RETENTION_DAYS` : Nombre de jours de conservation des sauvegardes (défaut : 7)
 - `BACKUP_SCHEDULE` : Planification des sauvegardes au format cron (défaut : 0 2 \* \* \*)
+
+#### Configuration de pgAdmin
+
+- `PGADMIN_DEFAULT_EMAIL` : Email de connexion à pgAdmin (défaut : admin@example.com)
+- `PGADMIN_DEFAULT_PASSWORD` : Mot de passe pgAdmin (modifiez cette valeur)
+- `PGADMIN_PORT` : Port d'accès à l'interface pgAdmin (défaut : 5050)
+- `PGADMIN_SERVER_MODE` : Mode serveur pour environnements multi-utilisateurs (défaut : False)
+- `PGADMIN_MASTER_PASSWORD_REQUIRED` : Exiger un mot de passe maître (défaut : False)
+- `PGADMIN_ENHANCED_COOKIE_PROTECTION` : Protection renforcée des cookies (défaut : True)
 
 ### Structure des dossiers
 

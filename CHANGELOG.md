@@ -16,6 +16,8 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Paramètres d'optimisation PostgreSQL
 - Mécanisme de rotation des sauvegardes basé sur la durée de rétention
 - Documentation complète du projet
+- Interface d'administration pgAdmin pour gérer visuellement la base de données
+- Script de configuration automatique de serveur pour pgAdmin
 
 ### Sécurité
 
@@ -23,3 +25,4 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Restrictions des privilèges avec `no-new-privileges`
 - Limitation des permissions sur les fichiers de sauvegarde
 - Variables d'environnement pour les données sensibles
+- Protection renforcée des cookies pour pgAdmin
