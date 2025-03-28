@@ -39,6 +39,16 @@ cat > config/pgadmin/servers.json << EOF
             "Username": "$POSTGRES_USER",
             "SSLMode": "prefer",
             "Comment": "Connexion automatique vers PostgreSQL"
+        },
+        "2": {
+            "Name": "Redis Local",
+            "Group": "Redis",
+            "Host": "redis",
+            "Port": $REDIS_PORT,
+            "Username": "",
+            "Password": "$REDIS_PASSWORD",
+            "Comment": "Connexion automatique vers Redis cache",
+            "ServerType": "redis"
         }
     }
 }
@@ -49,3 +59,6 @@ echo "Pour lancer l'environnement, exécutez : docker-compose up -d"
 echo "Accès à pgAdmin : http://localhost:$PGADMIN_PORT"
 echo "  - Email: $PGADMIN_DEFAULT_EMAIL"
 echo "  - Mot de passe: Voir dans votre fichier .env (variable PGADMIN_DEFAULT_PASSWORD)"
+echo "  - Redis et PostgreSQL seront automatiquement configurés dans pgAdmin"
+echo ""
+echo "Note: Lors du premier démarrage, l'extension Redis pour pgAdmin sera installée automatiquement."

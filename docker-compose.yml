@@ -97,6 +97,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - backend_network
     deploy:
@@ -151,8 +153,43 @@ services:
           memory: "${REDIS_MEMORY_LIMIT:-512M}"
     security_opt:
       - no-new-privileges:true
+    user: redis
     cap_drop:
       - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+
+  # Interface de gestion Redis avec Redis Commander
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis_admin
+    restart: unless-stopped
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:${REDIS_PASSWORD}
+      - HTTP_USER=admin
+      - HTTP_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "8089:8081"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - backend_network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: "256M"
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://localhost:8081"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 networks:
   backend_network:
@@ -170,4 +207,6 @@ volumes:
   pgadmin_data:
     driver: local
   redis_data:
+    driver: local
+  redisinsight_data:
     driver: local
