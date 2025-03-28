@@ -8,6 +8,7 @@ Cette solution fournit un environnement PostgreSQL standardisé et conteneurisé
 - **Persistance des données** grâce aux volumes Docker
 - **Sauvegardes automatiques** programmées avec rotation
 - **Interface d'administration pgAdmin** pour gérer visuellement la base de données
+- **Service Redis 7** pour le cache et le stockage de données en mémoire
 - **Paramètres de performance** optimisés et configurables
 - **Healthcheck** pour surveiller l'état de la base de données
 - **Configuration sécurisée** avec isolation et restrictions de privilèges
@@ -179,6 +180,45 @@ Si vous modifiez les paramètres PostgreSQL dans le fichier .env, exécutez à n
 ```bash
 ./scripts/setup.sh
 ```
+
+## Configuration de Redis
+
+Le service Redis est configuré pour fonctionner comme un cache et un stockage en mémoire pour vos applications.
+
+### Variables d'environnement Redis
+
+Modifiez ces paramètres dans le fichier `.env` pour personnaliser votre instance Redis :
+
+- `REDIS_PORT` : Port exposé pour Redis (défaut : 6379)
+- `REDIS_PASSWORD` : Mot de passe d'authentification Redis (modifiez cette valeur)
+- `REDIS_MAXMEMORY` : Limite de mémoire utilisée par Redis (défaut : 256mb)
+- `REDIS_MAXMEMORY_POLICY` : Politique d'éviction quand la mémoire est pleine (défaut : allkeys-lru)
+- `REDIS_APPENDONLY` : Activation de la persistance sur disque (défaut : yes)
+- `REDIS_APPENDFSYNC` : Fréquence de synchronisation des données (défaut : everysec)
+- `REDIS_CPU_LIMIT` : Limite CPU pour le conteneur Redis (défaut : 0.5)
+- `REDIS_MEMORY_LIMIT` : Limite mémoire pour le conteneur Redis (défaut : 512M)
+
+### Connexion à Redis
+
+Pour vous connecter à l'instance Redis depuis la ligne de commande :
+
+```bash
+docker-compose exec redis redis-cli -a $(grep REDIS_PASSWORD .env | cut -d '=' -f2)
+```
+
+### Politiques d'éviction
+
+La configuration par défaut utilise `allkeys-lru`, qui supprime les clés les moins récemment utilisées lorsque la mémoire est pleine. Les autres options disponibles sont :
+
+- `volatile-lru` : Supprime les clés moins récemment utilisées avec une date d'expiration
+- `volatile-ttl` : Supprime les clés avec le TTL le plus court
+- `volatile-random` : Supprime des clés aléatoires avec une date d'expiration
+- `allkeys-random` : Supprime des clés aléatoires
+- `noeviction` : Renvoie des erreurs lorsque la mémoire est pleine
+
+### Persistance des données
+
+Redis est configuré avec la persistance activée via le mode AOF (Append Only File), ce qui garantit que les données ne sont pas perdues en cas de redémarrage du service.
 
 ## License
 
